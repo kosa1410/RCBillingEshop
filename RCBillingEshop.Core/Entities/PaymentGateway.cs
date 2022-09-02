@@ -6,8 +6,7 @@ namespace RCBillingEshop.Core.Entities;
 
 public class PaymentGateway : Entity
 {
-    [Required, ForeignKey(nameof(Order))]
-    public Guid OrderId { get; set; }
+    public Order Order { get; set; }
     public string Name { get; set; }
     public string Destination { get; set; }
 }

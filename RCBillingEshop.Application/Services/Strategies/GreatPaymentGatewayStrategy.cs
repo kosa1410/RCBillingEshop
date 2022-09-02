@@ -9,7 +9,7 @@ using RCBillingEshop.Core.Entities;
 
 namespace RCBillingEshop.Application.Services;
 
-internal class GreatPaymentGatewayStrategy : IPaymentGatewayStrategy
+public class GreatPaymentGatewayStrategy : IPaymentGatewayStrategy
 {
     public PaymentResponse ProcessPayment(Order order)
     {

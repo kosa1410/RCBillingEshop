@@ -24,4 +24,8 @@
     <ProjectReference Include="..\RCBillingEshop.Core\RCBillingEshop.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

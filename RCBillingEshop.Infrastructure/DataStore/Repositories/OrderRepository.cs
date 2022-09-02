@@ -9,7 +9,7 @@ using RCBillingEshop.Core.Repositories;
 
 namespace RCBillingEshop.Infrastructure.DataStore.Repositories;
 
-internal class OrderRepository : Repository<Order>, IOrderRepository
+public class OrderRepository : Repository<Order>, IOrderRepository
 {
     private readonly BillingDbContext _billingDbContext;
 

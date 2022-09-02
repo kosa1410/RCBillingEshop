@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RCBillingEshop.Application\RCBillingEshop.Application.csproj" />
     <ProjectReference Include="..\RCBillingEshop.Infrastructure\RCBillingEshop.Infrastructure.csproj" />
   </ItemGroup>
 

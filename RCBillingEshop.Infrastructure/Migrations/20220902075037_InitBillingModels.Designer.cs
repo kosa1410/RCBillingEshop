@@ -12,7 +12,7 @@ using RCBillingEshop.Infrastructure.DataStore;
 namespace RCBillingEshop.Infrastructure.Migrations
 {
     [DbContext(typeof(BillingDbContext))]
-    [Migration("20220902070144_InitBillingModels")]
+    [Migration("20220902075037_InitBillingModels")]
     partial class InitBillingModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,8 @@ namespace RCBillingEshop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId");
+                    b.HasIndex("PaymentId")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -68,9 +69,6 @@ namespace RCBillingEshop.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -100,8 +98,8 @@ namespace RCBillingEshop.Infrastructure.Migrations
             modelBuilder.Entity("RCBillingEshop.Core.Entities.Order", b =>
                 {
                     b.HasOne("RCBillingEshop.Core.Entities.PaymentGateway", "PaymentGateway")
-                        .WithMany()
-                        .HasForeignKey("PaymentId")
+                        .WithOne("Order")
+                        .HasForeignKey("RCBillingEshop.Core.Entities.Order", "PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -122,6 +120,12 @@ namespace RCBillingEshop.Infrastructure.Migrations
             modelBuilder.Entity("RCBillingEshop.Core.Entities.Order", b =>
                 {
                     b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("RCBillingEshop.Core.Entities.PaymentGateway", b =>
+                {
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

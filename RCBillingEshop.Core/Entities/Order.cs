@@ -12,12 +12,13 @@ namespace RCBillingEshop.Core.Entities;
 
 public class Order : Entity
 {
+    [Required]
     public int OrderNumber { get; set; }
-
+    [Required]
     public Guid UserId { get; set; }
-
+    [Required]
     public decimal Price { get; set; }
-
+    [Required]
     public Currency Currency { get; set; }
 
     public PaymentGateway PaymentGateway { get; set; }
