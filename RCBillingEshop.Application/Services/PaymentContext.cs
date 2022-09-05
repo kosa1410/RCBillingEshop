@@ -1,4 +1,5 @@
-﻿using RCBillingEshop.Application.DataModels.Responses;
+﻿using RCBillingEshop.Application.DataModels.DomainModels;
+using RCBillingEshop.Application.DataModels.Responses;
 using RCBillingEshop.Application.Services.Abstractions;
 using RCBillingEshop.Core.Entities;
 
@@ -20,8 +21,9 @@ public class PaymentContext : IPaymentContext
 
     public PaymentResponse ExecutePaymentStrategy(Order order)
     {
-
-        return _paymentGatewayStrategy.ProcessPayment(order);
+        var money = new Money() { SelectedCurrency = order.Currency, Amount = order.Price };
+        
+        return _paymentGatewayStrategy.ProcessPayment(money, order.PaymentGateway);
     }
 
 }

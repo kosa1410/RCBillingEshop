@@ -7,7 +7,7 @@ namespace RCBillingEshop.Infrastructure.DataStore.Repositories;
 public class Repository<T> : IRepository<T>
     where T : Entity
 {
-    private readonly BillingDbContext _billingDbContext;
+    protected readonly BillingDbContext _billingDbContext;
 
     public Repository(BillingDbContext billingDbContext)
     {
@@ -27,14 +27,14 @@ public class Repository<T> : IRepository<T>
         await _billingDbContext.SaveChangesAsync(token);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default)
+    public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default)
     {
         return await _billingDbContext.Set<T>().ToListAsync(token);
     }
 
-    public async Task<T?> GetByIdAsync(Guid id, CancellationToken token = default)
+    public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        return await _billingDbContext.Set<T>().FindAsync(id, token);
+        return await _billingDbContext.Set<T>().FindAsync(id);
     }
 
     public async Task UpdateAsync(T entity, CancellationToken token = default)

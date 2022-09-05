@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NSubstitute;
+using RCBillingEshop.Application.DataModels.DomainModels;
 using RCBillingEshop.Application.DataModels.DTO;
 using RCBillingEshop.Application.DataModels.Responses;
 using RCBillingEshop.Application.DataModels.ViewModels;
@@ -53,7 +54,8 @@ public class BillingServiceTests
             Price = 10,
             PaymentGatewayId = paymentGatewayId,
         };
-        var paymentResponse = new PaymentResponse() { FullPayableAmount = order.Price, IsSuccesed = false };
+        var money = new Money() { SelectedCurrency = order.Currency, Amount = order.Price };
+        var paymentResponse = new PaymentResponse() { FullPayableAmount = money, IsSuccesed = false };
 
         _repository.AddAsync(
             Arg.Is<Order>(o =>
@@ -92,7 +94,9 @@ public class BillingServiceTests
             Price = 10,
             PaymentGatewayId = paymentGatewayId,
         };
-        var paymentResponse = new PaymentResponse(){FullPayableAmount = order.Price, IsSuccesed = true};
+        var money = new Money() { SelectedCurrency = order.Currency, Amount = order.Price };
+
+        var paymentResponse = new PaymentResponse(){FullPayableAmount = money, IsSuccesed = true};
 
         _repository.AddAsync(
             Arg.Is<Order>(o =>

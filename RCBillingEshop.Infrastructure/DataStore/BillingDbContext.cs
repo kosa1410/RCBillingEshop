@@ -12,5 +12,6 @@ public class BillingDbContext : DbContext
     public BillingDbContext(DbContextOptions options)
         : base(options)
     {
+        Orders.Include(o => o.PaymentGateway).ToList();
     }
 }

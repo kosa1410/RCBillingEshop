@@ -49,7 +49,8 @@ public class BillingService : IBillingService
 
         order.Receipt = new Receipt()
         {
-            FullPayableAmount = paymentResponse.FullPayableAmount
+            FullPayableAmount = paymentResponse.FullPayableAmount.Amount,
+            Currency = paymentResponse.FullPayableAmount.SelectedCurrency
         };
         await _repository.UpdateAsync(order);
     }
