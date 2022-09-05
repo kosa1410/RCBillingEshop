@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RCBillingEshop.Core.Entities.Base;
 using RCBillingEshop.Core.Repositories.Base;
 
@@ -20,31 +14,32 @@ public class Repository<T> : IRepository<T>
         _billingDbContext = billingDbContext;
     }
 
-    public async Task<T> AddAsync(T entity)
+    public async Task<T> AddAsync(T entity, CancellationToken token = default)
     {
-        await _billingDbContext.Set<T>().AddAsync(entity);
-        await _billingDbContext.SaveChangesAsync();
+        await _billingDbContext.Set<T>().AddAsync(entity, token);
+        await _billingDbContext.SaveChangesAsync(token);
         return entity;
     }
 
-    public async Task DeleteAsync(T entity)
+    public async Task DeleteAsync(T entity, CancellationToken token = default)
     {
         _billingDbContext.Set<T>().Remove(entity);
-        await _billingDbContext.SaveChangesAsync();
+        await _billingDbContext.SaveChangesAsync(token);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default)
     {
-        return await _billingDbContext.Set<T>().ToListAsync();
+        return await _billingDbContext.Set<T>().ToListAsync(token);
     }
 
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        return await _billingDbContext.Set<T>().FindAsync(id);
+        return await _billingDbContext.Set<T>().FindAsync(id, token);
     }
 
-    public Task UpdateAsync(T entity)
+    public async Task UpdateAsync(T entity, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        _billingDbContext.Set<T>().Update(entity);
+        await _billingDbContext.SaveChangesAsync(token);
     }
 }

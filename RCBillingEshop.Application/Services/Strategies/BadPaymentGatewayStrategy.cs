@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RCBillingEshop.Application.DataModels.Responses;
+﻿using RCBillingEshop.Application.DataModels.Responses;
 using RCBillingEshop.Application.Services.Abstractions;
 using RCBillingEshop.Core.Entities;
 
@@ -13,6 +8,6 @@ public class BadPaymentGatewayStrategy : IPaymentGatewayStrategy
 {
     public PaymentResponse ProcessPayment(Order order)
     {
-        return new PaymentResponse() { isSuccesed = false };
+        return new PaymentResponse() { IsSuccesed = false };
     }
 }

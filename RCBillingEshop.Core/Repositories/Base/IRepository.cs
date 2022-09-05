@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RCBillingEshop.Core.Entities.Base;
+﻿using RCBillingEshop.Core.Entities.Base;
 
 namespace RCBillingEshop.Core.Repositories.Base;
 
 public interface IRepository<T>
     where T : Entity
 {
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T> GetByIdAsync(int id);
-    Task<T> AddAsync(T entity);
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(T entity);
+    Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default);
+    Task<T?> GetByIdAsync(Guid id, CancellationToken token = default);
+    Task<T> AddAsync(T entity, CancellationToken token = default);
+    Task UpdateAsync(T entity, CancellationToken token = default);
+    Task DeleteAsync(T entity, CancellationToken token = default);
 }

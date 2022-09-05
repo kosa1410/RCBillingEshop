@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RCBillingEshop.Application.DataModels.Responses;
+﻿using RCBillingEshop.Application.DataModels.Responses;
 using RCBillingEshop.Application.Services.Abstractions;
 using RCBillingEshop.Core.Entities;
 
-namespace RCBillingEshop.Application.Services;
+namespace RCBillingEshop.Application.Services.Strategies;
 
 public class GreatPaymentGatewayStrategy : IPaymentGatewayStrategy
 {
     public PaymentResponse ProcessPayment(Order order)
     {
-        return new PaymentResponse() { FullPayableAmount = order.Price, isSuccesed = true };
+        return new PaymentResponse() { FullPayableAmount = order.Price, IsSuccesed = true };
     }
 }

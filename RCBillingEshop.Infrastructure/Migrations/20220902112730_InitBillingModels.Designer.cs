@@ -12,7 +12,7 @@ using RCBillingEshop.Infrastructure.DataStore;
 namespace RCBillingEshop.Infrastructure.Migrations
 {
     [DbContext(typeof(BillingDbContext))]
-    [Migration("20220902075037_InitBillingModels")]
+    [Migration("20220902112730_InitBillingModels")]
     partial class InitBillingModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ namespace RCBillingEshop.Infrastructure.Migrations
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("PaymentId")
+                    b.Property<Guid>("PaymentGatewayId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
@@ -50,8 +50,7 @@ namespace RCBillingEshop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId")
-                        .IsUnique();
+                    b.HasIndex("PaymentGatewayId");
 
                     b.ToTable("Orders");
                 });
@@ -98,8 +97,8 @@ namespace RCBillingEshop.Infrastructure.Migrations
             modelBuilder.Entity("RCBillingEshop.Core.Entities.Order", b =>
                 {
                     b.HasOne("RCBillingEshop.Core.Entities.PaymentGateway", "PaymentGateway")
-                        .WithOne("Order")
-                        .HasForeignKey("RCBillingEshop.Core.Entities.Order", "PaymentId")
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentGatewayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -124,8 +123,7 @@ namespace RCBillingEshop.Infrastructure.Migrations
 
             modelBuilder.Entity("RCBillingEshop.Core.Entities.PaymentGateway", b =>
                 {
-                    b.Navigation("Order")
-                        .IsRequired();
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

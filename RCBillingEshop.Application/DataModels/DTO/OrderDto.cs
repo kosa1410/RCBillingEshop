@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RCBillingEshop.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 using RCBillingEshop.Core.Enums;
 
 namespace RCBillingEshop.Application.DataModels.DTO;
@@ -18,9 +11,10 @@ public class OrderDto
 
     public decimal Price { get; set; }
 
+    [EnumDataType(typeof(Currency))]
     public Currency Currency { get; set; }
 
-    public Guid PaymentId { get; set; }
+    public Guid PaymentGatewayId { get; set; }
 
     public string? Description { get; set; }
 

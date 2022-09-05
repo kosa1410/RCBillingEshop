@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using RCBillingEshop.Core.Entities.Base;
 using RCBillingEshop.Core.Enums;
 
@@ -23,8 +17,8 @@ public class Order : Entity
 
     public PaymentGateway PaymentGateway { get; set; }
 
-    [Required, ForeignKey(nameof(Entities.PaymentGateway))]
-    public Guid PaymentId { get; set; }
+    [Required]
+    public Guid PaymentGatewayId { get; set; }
 
     public string? Description { get; set; }
 

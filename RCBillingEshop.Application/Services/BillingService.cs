@@ -1,47 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RCBillingEshop.Application.DataModels.DomainModels;
-using RCBillingEshop.Application.DataModels.DTO;
+﻿using RCBillingEshop.Application.DataModels.DTO;
 using RCBillingEshop.Application.DataModels.Mappers;
-using RCBillingEshop.Application.DataModels.Responses;
 using RCBillingEshop.Application.DataModels.ViewModels;
 using RCBillingEshop.Application.Exceptions;
 using RCBillingEshop.Application.Services.Abstractions;
 using RCBillingEshop.Application.Services.Strategies;
 using RCBillingEshop.Core.Entities;
 using RCBillingEshop.Core.Enums;
-using RCBillingEshop.Core.Repositories;
 using RCBillingEshop.Core.Repositories.Base;
 
 namespace RCBillingEshop.Application.Services;
 
 public class BillingService : IBillingService
 {
-    private readonly IOrderRepository _repository;
+    private readonly IRepository<Order> _repository;
+    private readonly IPaymentContext _paymentContext;
 
-    public BillingService(IOrderRepository repository)
+    public BillingService(IRepository<Order> repository, IPaymentContext paymentContext)
     {
         _repository = repository;
+        _paymentContext = paymentContext;
     }
 
-    public async Task<Guid> CreateOrderAsync(OrderDto input, CancellationToken token)
+
+    public async Task<Guid> ProcessOrderAsync(OrderDto input, CancellationToken token = default)
     {
-        var order = OrderMapper.ToEntity(input);
-        await _repository.AddAsync(order);
+        var createdOrder = await CreateOrderAsync(input, token);
 
-        await ProcessOrder(order);
+        await ProcessOrderToPaymentGatewayAsync(createdOrder);
 
-        return order.Id;
+        return createdOrder.Id;
     }
 
-    private async Task ProcessOrder(Order order)
+    private async Task<Order> CreateOrderAsync(OrderDto input, CancellationToken token = default)
     {
-        var paymentContext = new PaymentContext(GetGatewayStrategy(order.Currency));
-        var paymentResponse = paymentContext.ExecutePaymentStrategy(order);
-        if (!paymentResponse.isSuccesed)
+        var order = input.ToEntity();
+
+        return await _repository.AddAsync(order, token);
+
+    }
+    private async Task ProcessOrderToPaymentGatewayAsync(Order order)
+    {
+        _paymentContext.SetStrategy(GetGatewayStrategy(order.Currency));
+        var paymentResponse = _paymentContext.ExecutePaymentStrategy(order);
+        if (!paymentResponse.IsSuccesed)
         {
             throw new PaymentFailedException($"Payment failed for Order Id : {order.Id}");
         }
@@ -53,7 +54,7 @@ public class BillingService : IBillingService
         await _repository.UpdateAsync(order);
     }
 
-    private IPaymentGatewayStrategy GetGatewayStrategy(Currency currency)
+    private static IPaymentGatewayStrategy GetGatewayStrategy(Currency currency)
     {
         switch (currency)
         {
@@ -65,15 +66,21 @@ public class BillingService : IBillingService
                 return new GreatPaymentGatewayStrategy();
         }
     }
-    public async Task<IEnumerable<OrderViewModel>> FindOrderAsync(int orderNumber, CancellationToken token = default)
+
+    public async Task<IEnumerable<OrderViewModel>> GetAllOrdersAsync(CancellationToken token)
     {
-        var orders = await _repository.GetOrderByOrderNumber(orderNumber, token);
+        var orders = await _repository.GetAllAsync(token);
         return orders.Select(OrderMapper.ToViewModel).ToList();
     }
 
-    public async Task<IEnumerable<OrderViewModel>> GetAllAsync(CancellationToken token)
+    public async Task<OrderViewModel> GetOrdersAsync(Guid guid,CancellationToken token)
     {
-        var orders = await _repository.GetAllAsync();
-        return orders.Select(OrderMapper.ToViewModel).ToList();
+        var order = await _repository.GetByIdAsync(guid, token);
+        if (order == null)
+        {
+            throw new EntityNotFoundException(typeof(Order),"There is no order with given id");
+        }
+
+        return order.ToViewModel();
     }
 }

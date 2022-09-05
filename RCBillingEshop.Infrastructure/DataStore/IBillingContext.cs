@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RCBillingEshop.Core.Entities;
 
-namespace Billing.Application.Services
+namespace RCBillingEshop.Infrastructure.DataStore
 {
     public interface IBillingContext
     {

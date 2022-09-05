@@ -1,22 +1,26 @@
-using Billing.Api.ExtensionMethods;
+using System.Text.Json.Serialization;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using RCBillingEshop.API;
+using RCBillingEshop.API.Extensions;
+using RCBillingEshop.Application.Validators;
 using RCBillingEshop.Infrastructure.DataStore;
+using RCBillingEshop.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddControllers(options => options.Filters.Add(new ApiExceptionFilterAttribute()))
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-builder.Services.AddControllers();
+
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(OrderValidator));
 builder.Services.AddDbContext<BillingDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Billing")));
 builder.Services.AddBillingAppServices();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 await app.MigrateAsync();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

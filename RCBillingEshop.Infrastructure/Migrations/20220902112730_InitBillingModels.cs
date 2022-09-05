@@ -31,15 +31,15 @@ namespace RCBillingEshop.Infrastructure.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false),
-                    PaymentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PaymentGatewayId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_PaymentGateways_PaymentId",
-                        column: x => x.PaymentId,
+                        name: "FK_Orders_PaymentGateways_PaymentGatewayId",
+                        column: x => x.PaymentGatewayId,
                         principalTable: "PaymentGateways",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -65,10 +65,9 @@ namespace RCBillingEshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_PaymentId",
+                name: "IX_Orders_PaymentGatewayId",
                 table: "Orders",
-                column: "PaymentId",
-                unique: true);
+                column: "PaymentGatewayId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Receipts_OrderId",
